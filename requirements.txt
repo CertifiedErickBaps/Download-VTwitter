@@ -1,0 +1,39 @@
+requests
+beautifulsoup4
+m3u8
+
+https://twitter.com/CamiloVIImx/status/1044303777644326913
+
+
+# import urllib.request
+# import shutil
+# import urllib3
+
+# url = 'https://youtu.be/F1B9Fk_SgI0'
+
+# connection_pool = urllib3.PoolManager()
+
+# resp = connection_pool.request('GET', url)
+# f = open( 'test.mp4', 'wb')
+# f.write(resp.data)
+# f.close()
+# resp.release_conn()
+
+# import urllib.request
+# url = "https://youtu.be/F1B9Fk_SgI0"
+# name = "test.mp4"
+
+# try:
+#     print("Downloading starts...\n")
+#     urllib.request.urlretrieve(url, name)
+#     print("Download completed..!!")
+# except Exception as e:
+#     print(e)
+
+# url = 'https://youtu.be/F1B9Fk_SgI0'
+# c = urllib3.PoolManager()
+
+# with c.request('GET',url, preload_content=False) as resp, open("test.mp4", 'wb') as out_file:
+#     shutil.copyfileobj(resp, out_file)
+
+# resp.release_conn()
