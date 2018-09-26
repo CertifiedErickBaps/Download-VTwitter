@@ -79,7 +79,7 @@ def download(video_url):
 				ts_path = resolution_dir / Path(fname)
 				ts_list.append(ts_path)
 
-				ts_path.write_bytes(ts_file.content)
+				ts_path.write_bytes(ts_file[-1].content)
 
 			ts_full_file = Path(resolution[-1] + '.mp4')
 
@@ -91,5 +91,5 @@ def download(video_url):
 	shutil.rmtree(output_dir, ignore_errors=True)        
 
 def main():
-	download("https://twitter.com/ONU_es/status/1044362090486460416")
+	download("https://twitter.com/cuttingvids/status/1044807546240946178")
 main()
