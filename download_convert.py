@@ -10,9 +10,11 @@ import urllib.parse
 import m3u8
 from pathlib import Path
 import re
-
+import cv2
+import numpy as np
 
 def download(video_url):
+	
 	try:
 		if not os.path.exists('output'):
 			os.makedirs('output')
@@ -88,8 +90,41 @@ def download(video_url):
 				for f in ts_list:
 					with open(f, 'rb') as fd:
 						shutil.copyfileobj(fd, wfd, 1024 * 1024 * 10)
-	shutil.rmtree(output_dir, ignore_errors=True)        
+	shutil.rmtree(output_dir, ignore_errors=True)
+	print(str(wfd.name))        
+
+	cap = cv2.VideoCapture(wfd.name)
+	try:
+		if not os.path.exists('data'):
+			os.makedirs('data')
+	except OSError:
+		print ('Error: Creating directory of data')
+
+	currentFrame = 0
+	success, frame = cap.read()
+	success = True
+	while(success):
+		min = 3600
+		# Capture frame per minute (currentFrame*3600)
+		cap.set(cv2.CAP_PROP_POS_MSEC,(currentFrame*min))
+		success, frame = cap.read()
+		# Saves image of the current frame in jpg file
+		print('Read a new frame: ', success)
+		if(success != False):
+			name = './data/frame' + str(currentFrame) + '.jpg'
+			print ('Creating...' + name)
+			cv2.imwrite(name, frame)
+			currentFrame += 1
+		# To stop duplicate images
+		
+
+	# When everything done, release the capture
+	cap.release()
+	cv2.destroyAllWindows()
 
 def main():
+	# parser = argparse.ArgumentParser()
+	# parser.add_argument('-v', '--video', dest='video_url', help='The video URL on Twitter (https://twitter.com/<user>/status/<id>).', required=True)
+	# args = parser.parse_args()
 	download("https://twitter.com/ONU_es/status/1044362090486460416")
 main()
