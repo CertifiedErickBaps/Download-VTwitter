@@ -10,7 +10,8 @@ import urllib.parse
 import m3u8
 from pathlib import Path
 import re
-
+import socket
+from flask import jsonify
 
 def download(video_url):
 	try:
@@ -44,11 +45,22 @@ def download(video_url):
 	bearer_token = bearer_token_pattern.search(js_file_response.text)
 	bearer_token = bearer_token.group(0)
 
-	# Talk to the API to get the m3u8 URL
+	# Talk to the API to get the m3u8 URL and socket
+	host = 'api.twitter.com'
+	port = 443
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.connect((host, port))
+	
 	player_config = requests.get('https://api.twitter.com/1.1/videos/tweet/config/' + tweet_id + '.json', headers={'Authorization': bearer_token})
+	player_config = s.send(json.dumps(player_config))
+	player_config = jsonify(player_config)
+	player_config.status_code = 200
 	m3u8_url_get = json.loads(player_config.text)
-	m3u8_url_get = m3u8_url_get['track']['playbackUrl']
-
+	
+	try:
+		m3u8_url_get = m3u8_url_get['track']['playbackUrl']
+	except KeyError as error:
+		print(error)
 	# Get m3u8
 	m3u8_response = requests.get(m3u8_url_get, headers = {'Authorization': bearer_token})
 
@@ -79,7 +91,7 @@ def download(video_url):
 				ts_path = resolution_dir / Path(fname)
 				ts_list.append(ts_path)
 
-				ts_path.write_bytes(ts_file[-1].content)
+				ts_path.write_bytes(ts_file.content)
 
 			ts_full_file = Path(resolution[-1] + '.mp4')
 
@@ -88,8 +100,9 @@ def download(video_url):
 				for f in ts_list:
 					with open(f, 'rb') as fd:
 						shutil.copyfileobj(fd, wfd, 1024 * 1024 * 10)
-	shutil.rmtree(output_dir, ignore_errors=True)        
+	shutil.rmtree(output_dir, ignore_errors=True)
+	s.close()        
 
 def main():
-	download("https://twitter.com/cuttingvids/status/1044807546240946178")
+	download("https://twitter.com/DeliciousVids/status/1044966212738793472")
 main()

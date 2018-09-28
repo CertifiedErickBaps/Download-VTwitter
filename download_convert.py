@@ -13,7 +13,7 @@ import re
 import cv2
 import numpy as np
 
-def download(video_url):
+def download_covert(video_url):
 	
 	try:
 		if not os.path.exists('output'):
@@ -126,5 +126,5 @@ def main():
 	# parser = argparse.ArgumentParser()
 	# parser.add_argument('-v', '--video', dest='video_url', help='The video URL on Twitter (https://twitter.com/<user>/status/<id>).', required=True)
 	# args = parser.parse_args()
-	download("https://twitter.com/ONU_es/status/1044362090486460416")
+	download_convert("https://twitter.com/ONU_es/status/1044362090486460416")
 main()
